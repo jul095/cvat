@@ -1,12 +1,12 @@
 /*
-* Copyright (C) 2019-2020 Intel Corporation
-* SPDX-License-Identifier: MIT
-*/
+ * Copyright (C) 2019-2020 Intel Corporation
+ * SPDX-License-Identifier: MIT
+ */
 
 /**
-    * Class representing a machine learning model
-    * @memberof module:API.cvat.classes
-*/
+ * Class representing a machine learning model
+ * @memberof module:API.cvat.classes
+ */
 class MLModel {
     constructor(data) {
         this._id = data.id;
@@ -25,7 +25,7 @@ class MLModel {
     /**
      * @returns {string}
      * @readonly
-    */
+     */
     get id() {
         return this._id;
     }
@@ -33,7 +33,7 @@ class MLModel {
     /**
      * @returns {string}
      * @readonly
-    */
+     */
     get name() {
         return this._name;
     }
@@ -41,7 +41,7 @@ class MLModel {
     /**
      * @returns {string[]}
      * @readonly
-    */
+     */
     get labels() {
         if (Array.isArray(this._labels)) {
             return [...this._labels];
@@ -53,7 +53,7 @@ class MLModel {
     /**
      * @returns {string}
      * @readonly
-    */
+     */
     get framework() {
         return this._framework;
     }
@@ -61,7 +61,7 @@ class MLModel {
     /**
      * @returns {string}
      * @readonly
-    */
+     */
     get description() {
         return this._description;
     }
@@ -69,7 +69,7 @@ class MLModel {
     /**
      * @returns {module:API.cvat.enums.ModelType}
      * @readonly
-    */
+     */
     get type() {
         return this._type;
     }
@@ -77,7 +77,7 @@ class MLModel {
     /**
      * @returns {object}
      * @readonly
-    */
+     */
     get params() {
         return {
             canvas: { ...this._params.canvas },

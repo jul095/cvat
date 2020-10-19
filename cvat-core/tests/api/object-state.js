@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2018 Intel Corporation
  * SPDX-License-Identifier: MIT
-*/
+ */
 
 /* global
     require:false
@@ -168,30 +168,25 @@ describe('Feature: save object from its state', () => {
         const state = annotations[0];
 
         state.occluded = 'false';
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         const oldPoints = state.points;
         state.occluded = false;
         state.points = ['100', '50', '100', {}];
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         state.points = oldPoints;
         state.lock = 'true';
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         const oldLabel = state.label;
         state.lock = false;
         state.label = 1;
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         state.label = oldLabel;
         state.attributes = { 1: {}, 2: false, 3: () => {} };
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
     });
 
     test('save bad values for a track', async () => {
@@ -200,40 +195,33 @@ describe('Feature: save object from its state', () => {
         const state = annotations[0];
 
         state.occluded = 'false';
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         const oldPoints = state.points;
         state.occluded = false;
         state.points = ['100', '50', '100', {}];
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         state.points = oldPoints;
         state.lock = 'true';
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         const oldLabel = state.label;
         state.lock = false;
         state.label = 1;
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         state.label = oldLabel;
         state.outside = 5;
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         state.outside = false;
         state.keyframe = '10';
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
 
         state.keyframe = true;
         state.attributes = { 1: {}, 2: false, 3: () => {} };
-        await expect(state.save())
-            .rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        await expect(state.save()).rejects.toThrow(window.cvat.exceptions.ArgumentError);
     });
 
     test('trying to change locked shape', async () => {

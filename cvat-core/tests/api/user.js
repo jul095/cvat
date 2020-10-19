@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2018 Intel Corporation
  * SPDX-License-Identifier: MIT
-*/
+ */
 
 /* global
     require:false
@@ -41,14 +41,18 @@ describe('Feature: get a list of users', () => {
     });
 
     test('get users with unknown filter key', async () => {
-        expect(window.cvat.users.get({
-            unknown: '50',
-        })).rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        expect(
+            window.cvat.users.get({
+                unknown: '50',
+            }),
+        ).rejects.toThrow(window.cvat.exceptions.ArgumentError);
     });
 
     test('get users with invalid filter key', async () => {
-        expect(window.cvat.users.get({
-            self: 1,
-        })).rejects.toThrow(window.cvat.exceptions.ArgumentError);
+        expect(
+            window.cvat.users.get({
+                self: 1,
+            }),
+        ).rejects.toThrow(window.cvat.exceptions.ArgumentError);
     });
 });

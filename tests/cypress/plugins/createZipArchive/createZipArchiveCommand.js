@@ -7,6 +7,6 @@
 Cypress.Commands.add('createZipArchive', function (directoryToArchive, arhivePath) {
     return cy.task('createZipArchive', {
         directoryToArchive: directoryToArchive,
-        arhivePath: arhivePath
-    })
-})
+        arhivePath: arhivePath,
+    });
+});

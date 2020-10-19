@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2019 Intel Corporation
-* SPDX-License-Identifier: MIT
-*/
+ * Copyright (C) 2019 Intel Corporation
+ * SPDX-License-Identifier: MIT
+ */
 
 /* global
    require:true
@@ -19,24 +19,26 @@ onmessage = (e) => {
             _zip.forEach((relativePath) => {
                 const fileIndex = index++;
                 if (fileIndex <= end) {
-                    _zip.file(relativePath).async('blob').then((fileData) => {
-                        if (self.createImageBitmap) {
-                            createImageBitmap(fileData).then((img) => {
+                    _zip.file(relativePath)
+                        .async('blob')
+                        .then((fileData) => {
+                            if (self.createImageBitmap) {
+                                createImageBitmap(fileData).then((img) => {
+                                    postMessage({
+                                        fileName: relativePath,
+                                        index: fileIndex,
+                                        data: img,
+                                    });
+                                });
+                            } else {
                                 postMessage({
                                     fileName: relativePath,
                                     index: fileIndex,
-                                    data: img,
+                                    data: fileData,
+                                    isRaw: true,
                                 });
-                            });
-                        } else {
-                            postMessage({
-                                fileName: relativePath,
-                                index: fileIndex,
-                                data: fileData,
-                                isRaw: true,
-                            });
-                        }
-                    });
+                            }
+                        });
                 }
             });
         });

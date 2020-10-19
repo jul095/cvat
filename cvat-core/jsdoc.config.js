@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 module.exports = {
     plugins: [],
     recurseDepth: 10,

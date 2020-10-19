@@ -6,17 +6,17 @@
 
 /// <reference types="cypress" />
 
-const {imageGenerator} = require('../plugins/imageGenerator/addPlugin')
-const {createZipArchive} = require('../plugins/createZipArchive/addPlugin')
+const { imageGenerator } = require('../plugins/imageGenerator/addPlugin');
+const { createZipArchive } = require('../plugins/createZipArchive/addPlugin');
 module.exports = (on, config) => {
-    require('@cypress/code-coverage/task')(on, config)
-    on('task', {imageGenerator})
-    on('task', {createZipArchive})
+    require('@cypress/code-coverage/task')(on, config);
+    on('task', { imageGenerator });
+    on('task', { createZipArchive });
     on('task', {
         log(message) {
-            console.log(message)
-            return null
-        }
-    })
-    return config
-}
+            console.log(message);
+            return null;
+        },
+    });
+    return config;
+};

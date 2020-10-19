@@ -20,10 +20,7 @@ const defaultState: ModelsState = {
     inferences: {},
 };
 
-export default function (
-    state = defaultState,
-    action: ModelsActions | AuthActions | boundariesActions,
-): ModelsState {
+export default function (state = defaultState, action: ModelsActions | AuthActions | boundariesActions): ModelsState {
     switch (action.type) {
         case ModelsActionTypes.GET_MODELS: {
             return {
@@ -71,8 +68,7 @@ export default function (
                 return {
                     ...state,
                     inferences: Object.fromEntries(
-                        Object.entries(inferences)
-                            .filter(([key]): boolean => +key !== action.payload.taskID),
+                        Object.entries(inferences).filter(([key]): boolean => +key !== action.payload.taskID),
                     ),
                 };
             }

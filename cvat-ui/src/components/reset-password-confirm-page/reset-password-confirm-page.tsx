@@ -24,11 +24,7 @@ interface DispatchToProps {
 
 interface ResetPasswordConfirmPageComponentProps {
     fetching: boolean;
-    onResetPasswordConfirm: (
-        newPassword1: string,
-        newPassword2: string,
-        uid: string,
-        token: string) => void;
+    onResetPasswordConfirm: (newPassword1: string, newPassword2: string, uid: string, token: string) => void;
 }
 
 function mapStateToProps(state: CombinedState): StateToProps {
@@ -41,9 +37,7 @@ const mapDispatchToProps: DispatchToProps = {
     onResetPasswordConfirm: resetPasswordAsync,
 };
 
-function ResetPasswordPagePageComponent(
-    props: ResetPasswordConfirmPageComponentProps,
-): JSX.Element {
+function ResetPasswordPagePageComponent(props: ResetPasswordConfirmPageComponentProps): JSX.Element {
     const sizes = {
         xs: { span: 14 },
         sm: { span: 14 },
@@ -52,10 +46,7 @@ function ResetPasswordPagePageComponent(
         xl: { span: 4 },
     };
 
-    const {
-        fetching,
-        onResetPasswordConfirm,
-    } = props;
+    const { fetching, onResetPasswordConfirm } = props;
 
     return (
         <Row type='flex' justify='center' align='middle'>
@@ -77,7 +68,4 @@ function ResetPasswordPagePageComponent(
     );
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(ResetPasswordPagePageComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPasswordPagePageComponent);

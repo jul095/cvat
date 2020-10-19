@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2018 Intel Corporation
  * SPDX-License-Identifier: MIT
-*/
+ */
 
 /* global
     require:false
@@ -17,11 +17,7 @@ jest.mock('../../src/server-proxy', () => {
 
 // Initialize api
 window.cvat = require('../../src/api');
-const {
-    AnnotationFormats,
-    Loader,
-    Dumper,
-} = require('../../src/annotation-formats');
+const { AnnotationFormats, Loader, Dumper } = require('../../src/annotation-formats');
 
 // Test cases
 describe('Feature: get info about cvat', () => {
@@ -33,7 +29,6 @@ describe('Feature: get info about cvat', () => {
         expect('version' in result).toBeTruthy();
     });
 });
-
 
 describe('Feature: get share storage info', () => {
     test('get files in a root of a share storage', async () => {
@@ -49,9 +44,7 @@ describe('Feature: get share storage info', () => {
     });
 
     test('get files in a some unknown dir of a share storage', async () => {
-        expect(window.cvat.server.share(
-            'Unknown Directory',
-        )).rejects.toThrow(window.cvat.exceptions.ServerError);
+        expect(window.cvat.server.share('Unknown Directory')).rejects.toThrow(window.cvat.exceptions.ServerError);
     });
 });
 

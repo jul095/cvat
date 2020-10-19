@@ -123,7 +123,8 @@ export interface UserAgreementsState {
     initialized: boolean;
 }
 
-export interface ShareFileInfo { // get this data from cvat-core
+export interface ShareFileInfo {
+    // get this data from cvat-core
     name: string;
     type: 'DIR' | 'REG';
 }
