@@ -76,6 +76,8 @@ spec:
           - mountPath: /home/django/models
             name: cvat-backend-data
             subPath: models
+          - mountPath: /home/django/share
+            name: azure-share
       initContainers:
         - name: user-data-permission-fix
           image: busybox
@@ -97,3 +99,8 @@ spec:
         - name: cvat-backend-data
           persistentVolumeClaim:
             claimName: cvat-backend-data
+        - name: azure-share
+          azureFile:
+            secretName: cvat-backend-record-secret
+            shareName: recordings
+            readOnly: false
