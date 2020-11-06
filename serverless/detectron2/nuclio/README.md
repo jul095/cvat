@@ -7,5 +7,5 @@ nuctl create project cvat
 
 Execute following command
 ```
-cd ../.. && nuctl deploy --project-name cvat --path . --platform local
+nuctl deploy --project-name cvat --path . --platform local
 ```
