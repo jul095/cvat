@@ -1,6 +1,11 @@
 To deploy this model at first you need the nuctl cli.
 
+Before you have to create a nuclio project
+```
+nuctl create project cvat
+```
+
 Execute following command
 ```
-cd ../.. && nuctl deploy --project-name cvat --path serverless/detectron2/nuclio --platform local
+cd ../.. && nuctl deploy --project-name cvat --path . --platform local
 ```
