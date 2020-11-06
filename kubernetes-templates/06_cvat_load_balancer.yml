@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cvat-load-balancer
+  namespace: cvat
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: cvat-app
+    tier: proxy
