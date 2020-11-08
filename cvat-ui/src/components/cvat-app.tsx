@@ -19,7 +19,7 @@ import AnnotationPageContainer from 'containers/annotation-page/annotation-page'
 import CreateTaskPageContainer from 'containers/create-task-page/create-task-page';
 import LoginPageContainer from 'containers/login-page/login-page';
 import ModelsPageContainer from 'containers/models-page/models-page';
-import RegisterPageContainer from 'containers/register-page/register-page';
+// import RegisterPageContainer from 'containers/register-page/register-page';
 import TaskPageContainer from 'containers/task-page/task-page';
 import TasksPageContainer from 'containers/tasks-page/tasks-page';
 import getCore from 'cvat-core-wrapper';
@@ -334,7 +334,7 @@ class CVATApplication extends React.PureComponent<CVATAppProps & RouteComponentP
             return (
                 <GlobalErrorBoundary>
                     <Switch>
-                        <Route exact path='/auth/register' component={RegisterPageContainer} />
+                        {/* <Route exact path='/auth/register' component={RegisterPageContainer} /> */}
                         <Route exact path='/auth/login' component={LoginPageContainer} />
                         <Route exact path='/auth/login-with-token/:sessionId/:token' component={LoginWithTokenComponent} />
                         <Route exact path='/auth/password/reset' component={ResetPasswordPageComponent} />

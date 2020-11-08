@@ -135,36 +135,36 @@ function build() {
                     .apiWrapper(cvat.server.userAgreements);
                 return result;
             },
-            /**
-                * Method allows to register on a server
-                * @method register
-                * @async
-                * @memberof module:API.cvat.server
-                * @param {string} username An username for the new account
-                * @param {string} firstName A first name for the new account
-                * @param {string} lastName A last name for the new account
-                * @param {string} email A email address for the new account
-                * @param {string} password1 A password for the new account
-                * @param {string} password2 The confirmation password for the new account
-                * @param {Object} userConfirmations An user confirmations of terms of use if needed
-                * @returns {Object} response data
-                * @throws {module:API.cvat.exceptions.PluginError}
-                * @throws {module:API.cvat.exceptions.ServerError}
-            */
-            async register(
-                username,
-                firstName,
-                lastName,
-                email,
-                password1,
-                password2,
-                userConfirmations,
-            ) {
-                const result = await PluginRegistry
-                    .apiWrapper(cvat.server.register, username, firstName,
-                        lastName, email, password1, password2, userConfirmations);
-                return result;
-            },
+            // /**
+            //     * Method allows to register on a server
+            //     * @method register
+            //     * @async
+            //     * @memberof module:API.cvat.server
+            //     * @param {string} username An username for the new account
+            //     * @param {string} firstName A first name for the new account
+            //     * @param {string} lastName A last name for the new account
+            //     * @param {string} email A email address for the new account
+            //     * @param {string} password1 A password for the new account
+            //     * @param {string} password2 The confirmation password for the new account
+            //     * @param {Object} userConfirmations An user confirmations of terms of use if needed
+            //     * @returns {Object} response data
+            //     * @throws {module:API.cvat.exceptions.PluginError}
+            //     * @throws {module:API.cvat.exceptions.ServerError}
+            // */
+            // async register(
+            //     username,
+            //     firstName,
+            //     lastName,
+            //     email,
+            //     password1,
+            //     password2,
+            //     userConfirmations,
+            // ) {
+            //     const result = await PluginRegistry
+            //         .apiWrapper(cvat.server.register, username, firstName,
+            //             lastName, email, password1, password2, userConfirmations);
+            //     return result;
+            // },
             /**
                 * Method allows to login on a server
                 * @method login
