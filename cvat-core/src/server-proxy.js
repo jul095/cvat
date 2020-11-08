@@ -169,38 +169,38 @@
                 return response.data;
             }
 
-            async function register(
-                username,
-                firstName,
-                lastName,
-                email,
-                password1,
-                password2,
-                confirmations,
-            ) {
-                let response = null;
-                try {
-                    const data = JSON.stringify({
-                        username,
-                        first_name: firstName,
-                        last_name: lastName,
-                        email,
-                        password1,
-                        password2,
-                        confirmations,
-                    });
-                    response = await Axios.post(`${config.backendAPI}/auth/register`, data, {
-                        proxy: config.proxy,
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-                } catch (errorData) {
-                    throw generateError(errorData);
-                }
+            // async function register(
+            //     username,
+            //     firstName,
+            //     lastName,
+            //     email,
+            //     password1,
+            //     password2,
+            //     confirmations,
+            // ) {
+            //     let response = null;
+            //     try {
+            //         const data = JSON.stringify({
+            //             username,
+            //             first_name: firstName,
+            //             last_name: lastName,
+            //             email,
+            //             password1,
+            //             password2,
+            //             confirmations,
+            //         });
+            //         response = await Axios.post(`${config.backendAPI}/auth/register`, data, {
+            //             proxy: config.proxy,
+            //             headers: {
+            //                 'Content-Type': 'application/json',
+            //             },
+            //         });
+            //     } catch (errorData) {
+            //         throw generateError(errorData);
+            //     }
 
-                return response.data;
-            }
+            //     return response.data;
+            // }
 
             async function login(username, password) {
                 const authenticationData = ([
@@ -837,7 +837,7 @@
                         requestPasswordReset,
                         resetPassword,
                         authorized,
-                        register,
+                        // register,
                         request: serverRequest,
                         userAgreements,
                         installedApps,

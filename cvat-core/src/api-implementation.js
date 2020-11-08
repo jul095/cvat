@@ -50,7 +50,7 @@
 
     function implementAPI(cvat) {
         cvat.plugins.list.implementation = PluginRegistry.list;
-        cvat.plugins.register.implementation = PluginRegistry.register.bind(cvat);
+        //cvat.plugins.register.implementation = PluginRegistry.register.bind(cvat);
 
         cvat.lambda.list.implementation = lambdaManager.list.bind(lambdaManager);
         cvat.lambda.run.implementation = lambdaManager.run.bind(lambdaManager);
@@ -79,13 +79,13 @@
             return result;
         };
 
-        cvat.server.register.implementation = async (username, firstName, lastName,
+        /* cvat.server.register.implementation = async (username, firstName, lastName,
             email, password1, password2, userConfirmations) => {
             const user = await serverProxy.server.register(username, firstName,
                 lastName, email, password1, password2, userConfirmations);
 
             return new User(user);
-        };
+        }; */
 
         cvat.server.login.implementation = async (username, password) => {
             await serverProxy.server.login(username, password);
