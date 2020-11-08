@@ -20,7 +20,7 @@ urlpatterns = [
 
 if settings.DJANGO_AUTH_TYPE == 'BASIC':
     urlpatterns += [
-        path('register', RegisterView.as_view(), name='rest_register'),
+        # path('register', RegisterView.as_view(), name='rest_register'),
         path('password/reset', PasswordResetView.as_view(),
             name='rest_password_reset'),
         path('password/reset/confirm', PasswordResetConfirmView.as_view(),
