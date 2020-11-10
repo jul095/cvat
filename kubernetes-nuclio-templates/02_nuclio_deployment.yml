@@ -28,7 +28,7 @@ spec:
   scope: Namespaced
   version: v1beta1
 
----kub
+---
 
 # Define a "project" custom resource definition - extending the k8s API to allow management of "project" resources
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -68,7 +68,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nuclio
-  namespace: nuclio
+  namespace: cvat
 
 ---
 
@@ -78,7 +78,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nuclio-controller
-  namespace: nuclio
+  namespace: cvat
 spec:
   replicas: 1
   selector:
@@ -110,7 +110,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nuclio-dashboard
-  namespace: nuclio
+  namespace: cvat
 spec:
   replicas: 1
   selector:
@@ -148,15 +148,32 @@ spec:
           optional: true
       serviceAccountName: nuclio
 ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nuclio-dashboard
+#   namespace: nuclio
+# spec:
+#   selector:
+#     nuclio.io/app: dashboard
+#   ports:
+#   - name: admin
+#     port: 8070
+#     protocol: TCP
+# ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nuclio-dashboard
-  namespace: nuclio
+  name: nuclio-dashboard-load-balancer
+  namespace: cvat
+  labels:
+    nuclio.io/app: dashboard
 spec:
+  type: ClusterIP
   selector:
     nuclio.io/app: dashboard
   ports:
-  - name: admin
-    port: 8070
+  - port: 8070
+    targetPort: 8070
     protocol: TCP
+    name: http

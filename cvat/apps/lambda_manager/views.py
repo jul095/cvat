@@ -45,7 +45,7 @@ class LambdaGateway:
             port or settings.NUCLIO['PORT'])
         extra_headers = {
             'x-nuclio-project-name': 'cvat',
-            'x-nuclio-function-namespace': 'nuclio',
+            'x-nuclio-function-namespace': 'cvat',
         }
         if headers:
             extra_headers.update(headers)

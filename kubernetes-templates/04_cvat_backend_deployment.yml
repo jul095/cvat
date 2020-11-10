@@ -30,7 +30,9 @@ spec:
               memory: 5G
           env:
           - name: CVAT_NUCLIO_HOST
-            value: "nuclio-service"
+            value: "nuclio-dashboard-load-balancer"
+          - name: CVAT_SERVERLESS
+            value: "1"
           - name: no_proxy
             value: "$(CVAT_NUCLIO_HOST)"
           - name: DJANGO_MODWSGI_EXTRA_ARGS

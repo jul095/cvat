@@ -28,7 +28,6 @@ class ModelHandler:
         for compare_frame_index in range(len(compare_images)):
             for polygon1 in compare_polygons[compare_frame_index]:
                 polygon1["points"] = [numpy.min(polygon1["points"][::2]), numpy.min(polygon1["points"][::1]), numpy.max(polygon1["points"][::2]), numpy.max(polygon1["points"][::1])]
-                print("polygon1", polygon1, "\n")
 
             similarity_matrix = self._compute_similarity_matrix(image0,
                 polygons0, compare_images[compare_frame_index], compare_polygons[compare_frame_index], distance)
@@ -40,7 +39,6 @@ class ModelHandler:
                     results[idx0] = int(idx1)
 
             all_results.append(results)
-        print(all_results)
         return all_results
 
     def _match_boxes(self, box0, box1, distance):

@@ -16,7 +16,7 @@ class ModelLoader:
     def __init__(self, model_path, confidence_threshold):
         self.cfg = get_cfg()
         self.cfg.merge_from_file(model_zoo.get_config_file(model_path))
-        self.cfg.MODEL.DEVICE = 'cpu'
+        self.cfg.MODEL.DEVICE = 'cpu' # change if you want to use cuda hardware
         self.cfg.MODEL.ROI_HEADS.SCORE_TRESH_TEST = confidence_threshold
         self.cfg.MODEL.RETINANET.SCORE_THRESH_TEST = confidence_threshold
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = confidence_threshold
