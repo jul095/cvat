@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: cvat-backend-app-container
-          image: labeling.azurecr.io/cvat/server
+          image: labeling.azurecr.io/cvat/server # to replace with your Container Registry
           imagePullPolicy: Always
           resources:
             requests:

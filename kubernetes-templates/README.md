@@ -1,6 +1,9 @@
-# Deploying cvat in a kubernetes cluster
+# Deploying cvat in an Azure Kubernetes Service
 
 This guide will focus on how to deploy cvat in an kubernetes environment.
+
+## Requirements
+
 
 ## Building the container
 In order to do so,
@@ -8,17 +11,8 @@ you will first need to build the cvat backend and frontend images.
 Then push the builded images to a registry that the cluster has access to.
 ```bash
 echo "Building backend"
-docker build --cache-from $CI_REGISTRY_IMAGE/backend:release-1.1.0 \
-  --build-arg TF_ANNOTATION=no --build-arg AUTO_SEGMENTATION=no \
-  --build-arg WITH_TESTS=no --build-arg TZ="Etc/UTC" --build-arg OPENVINO_TOOLKIT=no \
-  --build-arg USER=django --build-arg DJANGO_CONFIGURATION=production \
-  --build-arg TZ="Etc/UTC" .
-docker push $CI_REGISTRY_IMAGE/backend:release-1.1.0
-
-echo "Building frontend"
-docker build --file Dockerfile.ui \
-  --tag $CI_REGISTRY_IMAGE/frontend:release-1.1.0 .
-docker push $CI_REGISTRY_IMAGE/frontend:release-1.1.0
+cd ..
+docker-compose push
 ```
 
 ## Adjusting the kubernetes templates

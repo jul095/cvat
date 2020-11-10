@@ -26,4 +26,4 @@ spec:
         - containerPort: 6379
         resources:
           limits:
-            cpu: "0.1"
+            cpu: "0.1" # Maybe add more CPU
