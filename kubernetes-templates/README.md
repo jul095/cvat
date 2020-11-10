@@ -3,7 +3,11 @@
 This guide will focus on how to deploy cvat in an kubernetes environment.
 
 ## Requirements
-
+You need to install 
+- nuctl
+- kubectl
+- docker
+- docker-compose
 
 ## Building the container
 In order to do so,
@@ -12,8 +16,27 @@ Then push the builded images to a registry that the cluster has access to.
 ```bash
 echo "Building backend"
 cd ..
-docker-compose push
+docker-compose build
 ```
+## Push the Container to your Container Registry
+At first you have to create your own Container Registry in Azure (ACR). You can
+follow this guide to create one and make sure to create in the same ResourceGroup as your Azure Kubernetes Cluster.
+https://docs.microsoft.com/de-de/azure/container-registry/container-registry-get-started-azure-cli.
+```bash
+az acr create --resource-group chaoskreuzung \
+  --name labeling --sku Basic
+```
+
+You have to rename the container in this format `<login-server>/cvat`. You can
+do this after the creation with `docker tag` or you rename the container
+straightforward in the `docker-compose.yml` file.
+
+After that you can login with `az acr login --name labeling` and you can push
+all relevant container with `docker-compose push` to the registry.
+
+## Create the Kubernetes Cluster in Azure
+
+
 
 ## Adjusting the kubernetes templates
 
