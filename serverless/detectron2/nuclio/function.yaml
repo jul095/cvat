@@ -88,7 +88,6 @@ metadata:
           { "id":89, "name": "hair_drier" },
           { "id":90, "name": "toothbrush" }
         ]
-
 spec:
   description: |
     An implementation of Mask RCNN on Detectron2
@@ -97,8 +96,7 @@ spec:
   handler: main:handler
   eventTimeout: 30s
   build:
-    image: detectron2
-    baseImage: detectron2:v0
+    baseImage: labeling.azurecr.io/detectron2
     directives:
       preCopy:
       - kind: RUN

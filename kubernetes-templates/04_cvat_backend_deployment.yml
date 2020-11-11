@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: cvat-backend-app-container
-          image: labeling.azurecr.io/cvat/server
+          image: labeling.azurecr.io/cvat/server # to replace with your Container Registry
           imagePullPolicy: Always
           resources:
             requests:
@@ -30,7 +30,9 @@ spec:
               memory: 5G
           env:
           - name: CVAT_NUCLIO_HOST
-            value: "nuclio-service"
+            value: "nuclio-dashboard-load-balancer"
+          - name: CVAT_SERVERLESS
+            value: "1"
           - name: no_proxy
             value: "$(CVAT_NUCLIO_HOST)"
           - name: DJANGO_MODWSGI_EXTRA_ARGS
@@ -40,7 +42,7 @@ spec:
           - name: UI_HOST
             value: "cvat-frontend-service"
           - name: ALLOWED_HOSTS
-            value: "*"
+            value: "*" # to replace with your Domain
           - name: CVAT_REDIS_HOST
             value: "cvat-redis-service"
           - name: CVAT_POSTGRES_HOST

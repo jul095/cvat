@@ -19,6 +19,10 @@ from cvat.apps.engine.serializers import LabeledDataSerializer
 from rest_framework.permissions import IsAuthenticated
 from cvat.apps.engine.models import ShapeType, SourceType
 
+import logging
+log = logging.getLogger(__name__)
+
+
 class LambdaType(Enum):
     DETECTOR = "detector"
     INTERACTOR = "interactor"
@@ -41,7 +45,7 @@ class LambdaGateway:
             port or settings.NUCLIO['PORT'])
         extra_headers = {
             'x-nuclio-project-name': 'cvat',
-            'x-nuclio-function-namespace': 'nuclio',
+            'x-nuclio-function-namespace': 'cvat',
         }
         if headers:
             extra_headers.update(headers)
@@ -490,6 +494,8 @@ class LambdaJob:
             if serializer.is_valid(raise_exception=True):
                 dm.task.put_task_data(db_task.id, serializer.data)
 
+
+
     @staticmethod
     def _call_reidsegmentation(function, db_task, quality, threshold, max_distance, frame_number):
         data = dm.task.get_task_data(db_task.id)
@@ -501,6 +507,7 @@ class LambdaJob:
             else:
                 shapes_without_polygons.append(shape)
         paths = {}
+
         for frame in range(db_task.data.size - 1):
             polygons0 = polygons_by_frame[frame]
             for polygon in polygons0:
@@ -511,32 +518,55 @@ class LambdaJob:
 
             to_compared_polygons = []
             to_compared_frames = []
-            for compare_frame_offset in range(1, frame_number):
-                to_compared_polygons.append(polygons_by_frame[frame + compare_frame_offset])
-                to_compared_frames.append(frame + compare_frame_offset)
+            for compare_frame_offset in range(1, frame_number+1):
+                if frame + compare_frame_offset < db_task.data.size:
+                    to_compared_polygons.append(polygons_by_frame[frame + compare_frame_offset])
+                    to_compared_frames.append(frame + compare_frame_offset)
 
-            if polygons0 and len(to_compared_polygons) > 0:
-                matching = function.invoke(db_task, data={
+            if len(polygons0) > 0 and len(to_compared_polygons) > 0:
+                all_matching = function.invoke(db_task, data={
                     "frame0": frame, "compare_frames": to_compared_frames, "quality": quality,
                     "polygons0": polygons0, "compare_polygons": to_compared_polygons, "threshold": threshold,
                     "max_distance": max_distance, "frame_number": int(frame_number)})
 
-                for idx0, idx1 in enumerate(matching):
-                    if idx1 >= 0:
-                        path_id = polygons0[idx0]["path_id"]
-                        polygons1[idx1]["path_id"] = path_id
-                        paths[path_id].append(polygons1[idx1])
+                for idx in range(len(polygons0)):
+                    # for each polygon
+                    for frame_id, matching in enumerate(all_matching):
+                        if frame_id >= 0 and frame_id < frame_number and matching[idx] >= 0:
+                            path_id = polygons0[idx]["path_id"]
+                            to_compared_polygons[frame_id][matching[idx]]["path_id"] = path_id
+                            if to_compared_polygons[frame_id][matching[idx]] not in paths[path_id]:
+                                paths[path_id].append(to_compared_polygons[frame_id][matching[idx]])
+
+
+                # for frame_id, matching in enumerate(all_matching):
+                #     for idx0, idx1 in enumerate(matching):
+                #         if idx1 >= 0:
+                #             path_id = polygons0[idx0]["path_id"]
+                #             to_compared_polygons[frame_id][idx1]["path_id"] = path_id
+                #             paths[path_id].append(to_compared_polygons[frame_id][idx1])
+
+
             progress = (frame + 2) / db_task.data.size
             if not LambdaJob._update_progress(progress):
                 break
+        # for polygon in polygons_by_frame[db_task.data.size - 1]:
+        #     if "path_id" not in polygon:
+        #         if paths[path_id].frame is frame_number - 1:
+        #             # last Frame
+        #             pass
+        #         elif paths[path_id].frame is 0:
+        #             # first Frame
+        #             pass
+        #         else:
+        #             pass
 
-        for polygon in polygons_by_frame[db_task.data.size - 1]:
-            if "path_id" not in polygon:
-                path_id = len(paths)
-                paths[path_id] = [polygon]
-                polygon["path_id"] = path_id
-        print("paths", paths)
+        #         path_id = len(paths)
+        #         paths[path_id] = [polygon] # here is the bug because multi frame handling
+        #         polygon["path_id"] = path_id
+
         tracks = []
+
         for path_id in paths:
             polygon0 = paths[path_id][0]
             tracks.append({
@@ -549,13 +579,15 @@ class LambdaJob:
             })
 
             for polygon in tracks[-1]["shapes"]:
-                polygon.pop("id", None)
-                polygon.pop("path_id")
-                polygon.pop("group")
-                polygon.pop("label_id")
-                polygon.pop("source")
-                polygon["outside"] = False
-                polygon["attributes"] = []
+                if "path_id" in polygon:
+                    polygon.pop("id", None)
+                    polygon.pop("path_id")
+                    polygon.pop("group")
+                    polygon.pop("label_id")
+                    polygon.pop("source")
+                    polygon["outside"] = False
+                    polygon["attributes"] = []
+
 
         for track in tracks:
             if track["shapes"][-1]["frame"] != db_task.data.size -1:
@@ -569,6 +601,7 @@ class LambdaJob:
             data["tracks"].extend(tracks)
             serializer = LabeledDataSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
+                pass
                 dm.task.put_task_data(db_task.id, serializer.data)
 
 
