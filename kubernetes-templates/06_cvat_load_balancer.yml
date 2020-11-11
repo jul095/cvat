@@ -3,8 +3,11 @@ kind: Service
 metadata:
   name: cvat-load-balancer
   namespace: cvat
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: chaoskreuzung
 spec:
   type: LoadBalancer
+  loadBalancerIP: 52.143.28.184
   ports:
   - port: 80
   selector:
