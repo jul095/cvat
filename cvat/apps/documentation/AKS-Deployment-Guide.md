@@ -1,6 +1,7 @@
 
 # Deployment on Azure Kubernetes Services
 - [Deploy CVAT](#Deploying-CVAT-on-Azure-Kubernetes-Service)
+- [Activate SSL and DNS Domain with Ingress](#Ingress-SSL-and-DNS)
 - [Nuclio](#Nuclio)
 
 ## Deploying CVAT on Azure Kubernetes Service
@@ -73,6 +74,135 @@ kubectl --namespace cvat exec -it cvat-backend-78c954f84f-qxb8b -- /bin/bash
 python3 ~/manage.py createsuperuser
 ```
 
+## Ingress SSL and DNS
+
+Ingress is responsible for managing HTTP and HTTPS Traffic from outside the
+cluster to services within the cluster. With the K8s load balancer type alone
+it's not possible to host with ssl encryption. So it's necessary to provide a
+ingress configuration. 
+
+### Requirements
+- [helm](https://helm.sh/docs/intro/install/)
+
+### Create a static Public IP with DNS Address
+At first create a static IP with this command. The sku is important. If you have
+a standard load balancer in AKS, you must use Standard here as well.
+
+```bash
+az network public-ip create \                                                                            
+    --resource-group <resourceGroup> \
+    --name <name_of_ip_address> \
+    --sku Standard 
+```
+To Access the IP from your AKS-Service, you need to add the `Network
+Contributor` role to your
+responsible AKS Service Principal.
+
+You can get the necessary data with following commands. 
+- SP_Client_ID: in the UI in the main AKS page of the cluster
+- subscription_id: `az account list --output table
+
+```bash
+az role assignment create \
+    --assignee <SP Client ID> \
+    --role "Network Contributor" \
+    --scope /subscriptions/<subscription id>/resourceGroups/<resource group name>
+```
+
+Now you can run following Bash script provided by Microsoft to attach a DNS
+Label to this IP Address
+```bash
+# Public IP address of your ingress controller
+IP="MY_EXTERNAL_IP"
+
+# Name to associate with public IP address
+DNSNAME="demo-aks-ingress"
+
+# Get the resource-id of the public ip
+PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
+
+# Update public ip address with DNS name
+az network public-ip update --ids $PUBLICIPID --dns-name $DNSNAME
+
+# Display the FQDN
+az network public-ip show --ids $PUBLICIPID --query "[dnsSettings.fqdn]" --output tsv
+```
+
+Now you have to install the cert-manager to use Let's Encrypt for a
+TLS-Certificate.
+```bash
+# Add the Jetstack Helm repository
+helm repo add jetstack https://charts.jetstack.io
+
+# Update your local Helm chart repository cache
+helm repo update
+
+# Install the cert-manager Helm chart
+helm install \
+  cert-manager \
+  --namespace cvat \
+  --version v0.16.1 \
+  --set installCRDs=true \
+  --set nodeSelector."beta\.kubernetes\.io/os"=linux \
+  jetstack/cert-manager
+```
+
+The cert-manager needs a Issuer and some data. You have to apply it to your
+kubernetes cluster. Take care to provide a email from your Organisation. This
+will remind you if you need to update the certificate.
+```yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: MY_EMAIL_ADDRESS
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+          podTemplate:
+            spec:
+              nodeSelector:
+                "kubernetes.io/os": linux
+```
+Details: https://docs.microsoft.com/de-de/azure/aks/static-ip
+
+### Add Ingress to AKS Cluster
+
+At first add the nginx-ingress Repository to helm `helm repo add ingress-nginx
+https://kubernetes.github.io/ingress-nginx`
+
+After that you can add ingress-nginx to your cluster. You can add the
+`replicaCount` for your purposes.
+
+```bash
+helm install nginx-ingress ingress-nginx/ingress-nginx \
+    --namespace cvat \
+    --set controller.replicaCount=1 \
+    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set controller.service.loadBalancerIP="Created Static IP Address" \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="<Your created DNS-Label>"\
+ --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"="<Your Resource Group of the DNS Label>"
+```
+
+Now you can update and deploy the [Ingress
+Configuration](../../../kubernetes-templates/07_labeling_ingress.yml)
+`07_labeling_ingress.yml` in the
+[kubernetes-templates](../../../kubernetes-templates) folder. Just change the
+`hosts` and `host` with your domain from Azure. The structure is for example
+`<dsnLabel>.westeurope.cloudapp.azure.com`
+
+Deploy it with `kubectl apply -f 07_labeling_ingress.yml` and there you go :yum:
+
+Details: https://docs.microsoft.com/de-de/azure/aks/ingress-tls
+
+
 ## Nuclio
 
 Nuclio is a serverless framework for machine learning Tasks. It's aim is to
@@ -133,3 +263,6 @@ Kubernetes-Files in the
 nuctl deploy polygon-reidentifcation --run-image labeling.azurecr.io/polygon-reidentification -f serverless/polygon-reidentification/nuclio/function.yaml --namespace cvat --project-name cvat --platform kube
 ```
 Now you should be able to access the serverless function with CVAT.
+
+
+

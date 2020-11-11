@@ -16,52 +16,23 @@ metadata:
         location ~* /api/.*|git/.*|tensorflow/.*|auto_annotation/.*|analytics/.*|static/.*|admin|admin/.*|documentation/.*|dextr/.*|reid/.*  {
             proxy_pass              http://cvat-backend-service:8080;
         }
-        client_max_body_size 0;
-    # nginx.ingress.kubernetes.io/http-snippet: |
-    #     include       mime.types;
-    #     default_type  application/octet-stream;
-    #     sendfile      on;
-    #     keepalive_timeout  65;
-    #     # For long domain names (e.g. AWS hosts)
-    #     server_names_hash_bucket_size 128;
-    #     client_max_body_size 0;
+        client_max_body_size 0; # Important, otherwise no video uploading possible!
+
 spec:
   tls:
   - hosts:
-    - chaoskreuzung.westeurope.cloudapp.azure.com # TODO
+    - chaoskreuzung.westeurope.cloudapp.azure.com # Replace with your domain
     secretName: tls-secret
   rules:
-  - host: "chaoskreuzung.westeurope.cloudapp.azure.com" # TODO
+  - host: "chaoskreuzung.westeurope.cloudapp.azure.com" # replace with your domain
     http:
       paths:
       - path: /(.*)
         backend:
           serviceName: cvat-frontend-service
           servicePort: 80
-      # - path: /
+      # In future we can try to remove the server snippet and write this here
+      # - path: /api/.*|git/.*|tensorflow/.*|auto_annotation/.*|analytics/.*|static/.*|admin|admin/.*|documentation/.*|dextr/.*|reid/.*
       #   backend:
-      #     serviceName: cvat-frontend-service
+      #     serviceName: cvat-backend-service
       #     servicePort: 80
-
-# apiVersion: networking.k8s.io/v1beta1
-# kind: Ingress
-# metadata:
-#   name: cvat-static-ingress
-#   annotations:
-#     kubernetes.io/ingress.class: nginx
-#     nginx.ingress.kubernetes.io/rewrite-target: /static/$2
-#     nginx.ingress.kubernetes.io/use-regex: "true"
-#     cert-manager.io/cluster-issuer: letsencrypt
-# spec:
-#   tls:
-#   - hosts:
-#     - chaoskreuzung.westeurope.cloudapp.azure.com # TODO
-#     secretName: tls-secret
-#   rules:
-#   - host: chaoskreuzung.westeurope.cloudapp.azure.com # TODO
-#     http:
-#       paths:
-#       - backend:
-#           serviceName: cvat-proxy-service # TODO
-#           servicePort: 80
-#         path: /static(/|$)(.*)
