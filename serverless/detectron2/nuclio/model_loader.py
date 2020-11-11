@@ -30,14 +30,15 @@ class ModelLoader:
     def __del__(self):
         pass
 
-    def infer(self, image):
+    def infer(self, image, user_specified_threshold):
         output = self.predictor(image)['instances'].to('cpu')
         result = []
         for i in range(len(output)):
-            label = self.labels[output.pred_classes[i]]
-            polygons = Mask(np.asarray(output[i].pred_masks)[0]).polygons()
-            if(len(polygons.points[0]) >= 3):
-                points = polygons.points[0].ravel().tolist()
-                result.append({"confidence": str(output[i].scores), "label": label, "points": points,  "type": "polygon",})
+            if output[i].scores >= user_specified_threshold:
+                label = self.labels[output.pred_classes[i]]
+                polygons = Mask(np.asarray(output[i].pred_masks)[0]).polygons()
+                if(len(polygons.points[0]) >= 3):
+                    points = polygons.points[0].ravel().tolist()
+                    result.append({"confidence": str(output[i].scores), "label": label, "points": points,  "type": "polygon",})
         return result
 

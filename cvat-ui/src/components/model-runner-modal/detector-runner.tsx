@@ -211,6 +211,30 @@ function DetectorRunner(props: Props): JSX.Element {
                     </Checkbox>
                 </div>
             )}
+            {isDetector && (
+                <div>
+                    <Row type='flex' justify='start' align='middle'>
+                        <Col>
+                            <Text>Threshold</Text>
+                        </Col>
+                        <Col offset={1}>
+                            <Tooltip title='Mininum threshold which must be reached by detection framework. The mininum is given by the nuclio function'>
+                                <InputNumber
+                                    min={0.01}
+                                    step={0.01}
+                                    max={1}
+                                    value={threshold}
+                                    onChange={(value: number | undefined) => {
+                                        if (typeof value === 'number') {
+                                            setThreshold(value);
+                                        }
+                                    }}
+                                />
+                            </Tooltip>
+                        </Col>
+                    </Row>
+                </div>
+            )}
             {isReId && (
                 <div>
                     <Row type='flex' align='middle' justify='start'>
@@ -322,25 +346,25 @@ function DetectorRunner(props: Props): JSX.Element {
                         disabled={!buttonEnabled}
                         type='primary'
                         onClick={() => {
-
-                            console.log(model.type === 'detector'
-                            ? { mapping, cleanup }
-                            : model.type === 'reidsegmentation'
-                            ? {
-                                  threshold,
-                                  max_distance: distance,
-                                  frame_number: frameNumber,
-                              }
-                            : {
-                                  threshold,
-                                  max_distance: distance,
-                              },
-                            )
+                            console.log(
+                                model.type === 'detector'
+                                    ? { mapping, cleanup }
+                                    : model.type === 'reidsegmentation'
+                                    ? {
+                                          threshold,
+                                          max_distance: distance,
+                                          frame_number: frameNumber,
+                                      }
+                                    : {
+                                          threshold,
+                                          max_distance: distance,
+                                      },
+                            );
                             runInference(
                                 task,
                                 model,
                                 model.type === 'detector'
-                                    ? { mapping, cleanup }
+                                    ? { mapping, cleanup, threshold }
                                     : model.type === 'reidsegmentation'
                                     ? {
                                           threshold,
