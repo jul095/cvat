@@ -4,10 +4,12 @@ This guide will focus on how to deploy cvat in an kubernetes environment.
 
 ## Requirements
 You need to install 
-- nuctl
-- kubectl
-- docker
-- docker-compose
+- [kubectl](https://kubernetes.io/de/docs/tasks/tools/install-kubectl/)
+- [nuctl](https://github.com/nuclio/nuclio/releases)
+- [docker](https://docs.docker.com/engine/install/)
+- [docker-compose](https://docs.docker.com/compose/install/)
+- [Azure CLI](https://docs.microsoft.com/de-de/cli/azure/install-azure-cli)
+
 
 ## Building the container
 In order to do so,
@@ -36,26 +38,28 @@ all relevant container with `docker-compose push` to the registry.
 
 ## Create the Kubernetes Cluster in Azure
 
+Create the Azure Kubernetes Cluster (AKS) with this command. You need
+Subscription Owner Privileges to process this.
+```bash
+az aks create --resource-group <resource_group> --name <cluster_name> --node-count 1 --generate-ssh-keys --attach-acr <name_of_container_registry>
+```
+Now your AKS-Cluster has access to your ACR. Now it is able to pull the
+pre-build Docker-Container from the Registry with Kubernetes. 
 
+## Create a Static IP and a DNS Address 
+https://docs.microsoft.com/de-de/azure/aks/ingress-tls
 
 ## Adjusting the kubernetes templates
 
 1.  Replace the URL pointing to the backend and frontend image in
 `kubernetes-templates/04_cvat_backend_deployment.yml` and
 `kubernetes-templates/04_cvat_frontend_deployment.yml`.
-Furthermore, adjusting their pull secrets or remove the lines accordingly.
 
-1.  Replacing the domain dummy with your real domain name
-`cvat.my.cool.domain.com`.
-Replace `{MY_SERVER_URL_COM}` in
-`kubernetes-templates/04_cvat_frontend_deployment.yml` and
-`kubernetes-templates/05_cvat_proxy_configmap.yml`.
-
-1.  Insert your choosen database password the
+2.  Insert your choosen database password the
 `kubernetes-templates/02_database_secrets.yml`
 
 ## Deploying to the cluster
-Deploy everything to your cluster with `kubectl apply -f kubernetes-templates/`
+Deploy everything to your cluster with `kubectl apply -f .`
 
 ## Create the django super user
 
@@ -64,3 +68,6 @@ kubectl get pods --namespace cvat
 kubectl --namespace cvat exec -it cvat-backend-78c954f84f-qxb8b -- /bin/bash
 python3 ~/manage.py createsuperuser
 ```
+
+## Deploy Nuclio for Autolabeling and Reidentification between Frames
+[View here](../kubernetes-nuclio-templates/README.md)

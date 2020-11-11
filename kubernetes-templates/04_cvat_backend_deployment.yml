@@ -42,7 +42,7 @@ spec:
           - name: UI_HOST
             value: "cvat-frontend-service"
           - name: ALLOWED_HOSTS
-            value: "*"
+            value: "*" # to replace with your Domain
           - name: CVAT_REDIS_HOST
             value: "cvat-redis-service"
           - name: CVAT_POSTGRES_HOST

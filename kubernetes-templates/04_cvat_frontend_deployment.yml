@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: cvat-frontend-app-container
-          image: labeling.azurecr.io/cvat/ui
+          image: labeling.azurecr.io/cvat/ui # to replace with your Container Registry
           imagePullPolicy: Always
           env:
           - name: REACT_APP_API_PROTOCOL
