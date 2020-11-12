@@ -17,6 +17,7 @@ metadata:
             proxy_pass              http://cvat-backend-service:8080;
         }
         client_max_body_size 0; # Important, otherwise no video uploading possible!
+        proxy_max_temp_file_size 0;
 
 spec:
   tls:
