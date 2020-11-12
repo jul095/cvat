@@ -96,6 +96,7 @@ spec:
   handler: main:handler
   eventTimeout: 30s
   build:
+    image: nuclio-detectron2
     baseImage: labeling.azurecr.io/detectron2
     directives:
       preCopy:

@@ -44,7 +44,6 @@ function DetectorRunner(props: Props): JSX.Element {
     });
 
     const model = models.filter((_model): boolean => _model.id === modelID)[0];
-    console.log(model);
     const isDetector = model && model.type === 'detector';
     const isReId = model && model.type === 'reid';
     const isReIdSegmentation = model && model.type === 'reidsegmentation';
@@ -346,20 +345,6 @@ function DetectorRunner(props: Props): JSX.Element {
                         disabled={!buttonEnabled}
                         type='primary'
                         onClick={() => {
-                            console.log(
-                                model.type === 'detector'
-                                    ? { mapping, cleanup }
-                                    : model.type === 'reidsegmentation'
-                                    ? {
-                                          threshold,
-                                          max_distance: distance,
-                                          frame_number: frameNumber,
-                                      }
-                                    : {
-                                          threshold,
-                                          max_distance: distance,
-                                      },
-                            );
                             runInference(
                                 task,
                                 model,

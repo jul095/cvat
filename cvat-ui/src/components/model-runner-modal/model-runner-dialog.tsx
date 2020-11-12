@@ -29,7 +29,6 @@ interface DispatchToProps {
 function mapStateToProps(state: CombinedState): StateToProps {
     const { models } = state;
     const { detectors, reid, reidsegmentation } = models;
-    console.log(reidsegmentation)
     return {
         visible: models.visibleRunWindows,
         task: models.activeRunTask,

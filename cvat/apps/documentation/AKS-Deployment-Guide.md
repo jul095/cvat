@@ -245,7 +245,7 @@ At first create a project for cvat `nuctl create project cvat --platform kube --
 ### Build container
 If you want to build the container just execute this command.
 ```bash
-nuctl build nuclio-polygon-reidentification --path polygon-reidentification/nuclio --registry <ACR_REGISTRY>
+nuctl build nuclio-polygon-reidentification --path serverless/polygon-reidentification/nuclio --registry <ACR_REGISTRY>
 ```
 If you deploy locally it is not necessary to build the container before
 deployment. But in the cluster you don't have access to you local file system so
