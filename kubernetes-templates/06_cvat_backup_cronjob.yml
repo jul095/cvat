@@ -1,0 +1,43 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cvat-backup
+  namespace: cvat
+  labels:
+    app: cvat-backup
+    tier: backup
+spec:
+  schedule: "0 3 * * 1"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: cvat-backup
+              image: busybox
+              imagePullPolicy: "IfNotPresent"
+              workingDir: /data
+              args:
+              - /bin/sh
+              - -c
+              - tar -cvpzf backup/backup_postgres_$(date +"%Y_%m_%d_%H_%M").tar.gz postgres; tar -cvpzf backup/backup_cvat_$(date +"%Y_%m_%d_%H_%M").tar.gz --exclude="*export_cache*" cvat
+              volumeMounts:
+                - mountPath: /data/postgres
+                  name: postgredb
+                - mountPath: /data/cvat
+                  name: cvat-backend-data
+                - mountPath: /data/backup
+                  name: azure-share
+          restartPolicy: OnFailure
+          volumes:
+            - name: postgredb
+              persistentVolumeClaim:
+                claimName: cvat-postgres-data
+            - name: cvat-backend-data
+              persistentVolumeClaim:
+                claimName: cvat-backend-data
+            - name: azure-share
+              azureFile:
+                secretName: cvat-backend-record-secret
+                shareName: backup
+                readOnly: false
