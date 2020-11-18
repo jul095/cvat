@@ -230,8 +230,11 @@ class ObjectManager:
                 # 5.1 Construct cost matrix for the frame.
                 for i, int_obj in enumerate(int_objects):
                     for j, old_obj in enumerate(old_objects):
-                        cost_matrix[i][j] = 1 - self._calc_objects_similarity(
-                            int_obj, old_obj, start_frame, overlap)
+                        try:
+                            cost_matrix[i][j] = 1 - self._calc_objects_similarity(int_obj, old_obj, start_frame, overlap)
+                        except:
+                            raise Exception("Invalide Polygon in frame " + str(frame))
+                    
 
                 # 6. Find optimal solution using Hungarian algorithm.
                 row_ind, col_ind = linear_sum_assignment(cost_matrix)
@@ -314,17 +317,17 @@ class ShapeManager(ObjectManager):
 
     @staticmethod
     def _calc_objects_similarity(obj0, obj1, start_frame, overlap):
-        # def _calc_polygons_similarity(p0, p1):
-        #     overlap_area = p0.intersection(p1).area
-        #     if p0.area == 0 or p1.area == 0: # a line with many points
-        #         return 0
-        #     else:
-        #         return overlap_area / (p0.area + p1.area - overlap_area)
         def _calc_polygons_similarity(p0, p1):
-            p0 = p0.buffer(0)
-            p1 = p1.buffer(0)
             overlap_area = p0.intersection(p1).area
-            return overlap_area / (p0.area + p1.area - overlap_area)
+            if p0.area == 0 or p1.area == 0: # a line with many points
+                return 0
+            else:
+                return overlap_area / (p0.area + p1.area - overlap_area)
+        # def _calc_polygons_similarity(p0, p1):
+        #     p0 = p0.buffer(0)
+        #     p1 = p1.buffer(0)
+        #     overlap_area = p0.intersection(p1).area
+        #     return overlap_area / (p0.area + p1.area - overlap_area)
             
         has_same_type  = obj0["type"] == obj1["type"]
         has_same_label = obj0.get("label_id") == obj1.get("label_id")
