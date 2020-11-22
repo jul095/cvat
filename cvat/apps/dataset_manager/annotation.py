@@ -12,6 +12,8 @@ from shapely import geometry
 from cvat.apps.engine.models import ShapeType
 from cvat.apps.engine.serializers import LabeledDataSerializer
 
+import sys
+
 
 class AnnotationIR:
     def __init__(self, data=None):
@@ -233,7 +235,8 @@ class ObjectManager:
                         try:
                             cost_matrix[i][j] = 1 - self._calc_objects_similarity(int_obj, old_obj, start_frame, overlap)
                         except:
-                            raise Exception("Invalide Polygon in frame " + str(frame))
+                            print("Invalid Polygon in frame " + str(frame) + " and Polygon " + str(int_obj["id"]), file=sys.stderr)
+                            #raise Exception("Invalid Polygon in frame " + str(frame) + " and Polygon " + str(int_obj["id"]))
                     
 
                 # 6. Find optimal solution using Hungarian algorithm.
