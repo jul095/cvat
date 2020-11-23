@@ -16,8 +16,9 @@ from detectron2.data import MetadataCatalog
 
 def init_context(context):
     context.logger.info("Init context... 0%")
-    model_path = 'COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_1x.yaml'
-    model_handler = ModelLoader(model_path, 0.3) # This is the minimal threshold for the Detector
+    config_path = 'COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml'
+    model_path = '/opt/nuclio/model_final.pth'
+    model_handler = ModelLoader(config_path, model_path, 0.3) # This is the minimal threshold for the Detector
     setattr(context.user_data, 'model_handler', model_handler)
     context.logger.info("Init context...100%")
 

@@ -1,3 +1,6 @@
+# avoid pushing model file
+*.pth 
+
 *.idea/
 .vscode/*
 
